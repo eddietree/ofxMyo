@@ -15,6 +15,9 @@ public:
 	// call everyframe to fetch Myo frame data
 	void update();
 
+	// prints current frame debug output
+	void printDebug();
+
 	// grab data
 	MyoFrameOrientationData getCurrFrameOrientionData() const;
 	MyoFramePoseData getCurrFramePoseData() const;

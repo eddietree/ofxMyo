@@ -29,9 +29,9 @@ void MyoDataCollector::onOrientationData(myo::Myo* myo, uint64_t timestamp, cons
 	orient_data.quaternion = ofQuaternion( quat.x(), quat.y(), quat.z(), quat.w() );
 
     // Convert the floating point angles in radians to a scale from 0 to 20.
-    orient_data.euler_roll = static_cast<int>((roll + (float)M_PI)/(M_PI * 2.0f) * 18);
-    orient_data.euler_pitch = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
-	orient_data.euler_yaw = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18);
+    orient_data.euler_roll = roll;
+    orient_data.euler_pitch = pitch;
+	orient_data.euler_yaw = yaw;
 }
 
 void MyoDataCollector::onPose(myo::Myo* myo, uint64_t timestamp, myo::Pose pose)

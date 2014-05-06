@@ -57,10 +57,18 @@ void ofxMyo::update()
 	{
 		const int run_num_ms = 1;
 		m_hub->run(1);
+	}
+}
 
+
+void ofxMyo::printDebug()
+{
+	if ( m_hub )
+	{
 		m_collector.printDebug();
 	}
 }
+
 
 void ofxMyo::release()
 {
