@@ -20,7 +20,7 @@ void ofxMyo::setup()
 		// Next, we try to find a Myo (any Myo) that's nearby and connect to it. waitForAnyMyo() takes a timeout
 		// value in milliseconds. In this case we will try to find a Myo for 10 seconds, and if that fails, the function
 		// will return a null pointer.
-		const int wait_num_ms = 1000;
+		const int wait_num_ms = 10000;
 		myo::Myo* myo = m_hub->waitForAnyMyo(wait_num_ms);
 
 		// If waitForAnyMyo() returned a null pointer, we failed to find a Myo, so exit with an error message.

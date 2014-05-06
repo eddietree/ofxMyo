@@ -9,6 +9,7 @@ struct MyoFrameOrientationData
 	uint64_t timestamp;
 	ofQuaternion quaternion;
 
+	// in radians
 	float euler_roll;
 	float euler_pitch;
 	float euler_yaw;
