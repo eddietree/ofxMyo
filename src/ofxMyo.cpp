@@ -70,3 +70,13 @@ void ofxMyo::release()
 		m_hub = nullptr;
 	}
 }
+
+MyoFrameOrientationData ofxMyo::getCurrFrameOrientionData() const
+{
+	return m_collector.getCurrFrameOrientionData();
+}
+
+MyoFramePoseData ofxMyo::getCurrFramePoseData() const
+{
+	return m_collector.getCurrFramePoseData();
+}

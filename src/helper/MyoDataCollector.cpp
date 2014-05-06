@@ -4,13 +4,13 @@
 #include <math.h>
 
 MyoDataCollector::MyoDataCollector()
-: roll_w(0), pitch_w(0), yaw_w(0), currentPose()
 {
+	memset( &m_orientation_data, 0, sizeof(m_orientation_data) );
 
+	memset( &m_pose_data, 0, sizeof(m_pose_data) );
+	m_pose_data.pose = myo::Pose();
 }
 
-// onOrientationData() is called whenever the Myo device provides its current orientation, which is represented
-// as a unit quaternion.
 void MyoDataCollector::onOrientationData(myo::Myo* myo, uint64_t timestamp, const myo::Quaternion<float>& quat)
 {
     using std::atan2;
@@ -24,42 +24,36 @@ void MyoDataCollector::onOrientationData(myo::Myo* myo, uint64_t timestamp, cons
     float yaw = atan2(2.0f * (quat.w() * quat.z() + quat.x() * quat.y()),
                     1.0f - 2.0f * (quat.y() * quat.y() + quat.z() * quat.z()));
 
+	MyoFrameOrientationData & orient_data = m_orientation_data;
+	orient_data.timestamp = timestamp;
+	orient_data.quaternion = ofQuaternion( quat.x(), quat.y(), quat.z(), quat.w() );
+
     // Convert the floating point angles in radians to a scale from 0 to 20.
-    roll_w = static_cast<int>((roll + (float)M_PI)/(M_PI * 2.0f) * 18);
-    pitch_w = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
-    yaw_w = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18);
+    orient_data.euler_roll = static_cast<int>((roll + (float)M_PI)/(M_PI * 2.0f) * 18);
+    orient_data.euler_pitch = static_cast<int>((pitch + (float)M_PI/2.0f)/M_PI * 18);
+	orient_data.euler_yaw = static_cast<int>((yaw + (float)M_PI)/(M_PI * 2.0f) * 18);
 }
 
-// onPose() is called whenever the Myo detects that the person wearing it has changed their pose, for example,
-// making a fist, or not making a fist anymore.
 void MyoDataCollector::onPose(myo::Myo* myo, uint64_t timestamp, myo::Pose pose)
 {
-    currentPose = pose;
+	MyoFramePoseData & pose_data = m_pose_data;
+	pose_data.timestamp = timestamp;
+
+	pose_data.pose = pose;
 
     // Vibrate the Myo whenever we've detected that the user has made a fist.
-    if (pose == myo::Pose::fist) {
+    if (pose == myo::Pose::fist) 
+	{
         myo->vibrate(myo::Myo::VibrationMedium);
     }
 }
 
-// There are other virtual functions in DeviceListener that we could override here, like onAccelerometerData().
-// For this example, the functions overridden above are sufficient.
-
-// We define this function to print the current values that were updated by the on...() functions above.
 void MyoDataCollector::printDebug()
 {
-    // Clear the current line
-    std::cout << '\r';
+	// orientation
+	printf("Orientation (roll,pitch,yaw) : [%f,%f,%f])\n", m_orientation_data.euler_roll, m_orientation_data.euler_pitch, m_orientation_data.euler_yaw );
 
-    // Pose::toString() provides the human-readable name of a pose. We can also output a Pose directly to an
-    // output stream (e.g. std::cout << currentPose;). In this case we want to get the pose name's length so
-    // that we can fill the rest of the field with spaces below, so we obtain it as a string using toString().
-    std::string poseString = currentPose.toString();
-
-    // Output the current values
-    std::cout << '[' << std::string(roll_w, '*') << std::string(18 - roll_w, ' ') << ']'
-                << '[' << std::string(pitch_w, '*') << std::string(18 - pitch_w, ' ') << ']'
-                << '[' << std::string(yaw_w, '*') << std::string(18 - yaw_w, ' ') << ']'
-                << '[' << poseString << std::string(16 - poseString.size(), ' ') << ']'
-                << std::flush;
+	// pose
+    std::string poseString = m_pose_data.pose.toString();
+	std::cout << "Pose at time " << m_pose_data.timestamp << ": " << poseString << std::endl;
 }
