@@ -1,7 +1,7 @@
 ofxMyo
 ======
 
-Wrapper for Thalmic Myo API (SDK Alpha 5) 
+Wrapper for [Thalmic Myo API](https://www.thalmic.com/en/myo/) (SDK Alpha 5) 
 
 Currently only for Windows (Thalmic has not released the MacOSX API yet)
 
